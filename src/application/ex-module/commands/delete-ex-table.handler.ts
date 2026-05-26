@@ -1,8 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { DeleteExTableCommand } from './delete-ex-table.command';
 import type { IExTableRepository } from '../../../domain/ex-module/ex-table.repository';
 import { EX_TABLE_REPOSITORY } from '../../../domain/ex-module/ex-table.repository';
+import { NotFoundDomainException } from '../../../domain/exceptions';
 
 @CommandHandler(DeleteExTableCommand)
 export class DeleteExTableHandler
@@ -17,7 +18,7 @@ export class DeleteExTableHandler
     const existing = await this.repository.findById(command.id);
     
     if (!existing) {
-      throw new NotFoundException(`ExTable with id ${command.id} not found`);
+      throw NotFoundDomainException.forResource('ExTable', command.id);
     }
 
     await this.repository.delete(command.id);

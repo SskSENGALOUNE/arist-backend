@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -20,6 +21,8 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateExTableDto } from './dto/create-ex-table.dto';
 import { UpdateExTableDto } from './dto/update-ex-table.dto';
 import { ExTableResponseDto } from './dto/ex-table-response.dto';
+import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
+import { PaginatedResponse } from '../common/dto/paginated-response.dto';
 import {
   CreateExTableCommand,
   UpdateExTableCommand,
@@ -29,9 +32,11 @@ import {
   GetExTableByIdQuery,
   GetAllExTablesQuery,
 } from '../../application/ex-module/queries';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('ex-tables')
-@Controller('ex-tables')
+@Public()
+@Controller({ path: 'ex-tables', version: '1' })
 export class ExTableController {
   constructor(
     private readonly commandBus: CommandBus,
@@ -54,15 +59,27 @@ export class ExTableController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all ExTable records' })
+  @ApiOperation({ summary: 'List ExTable records (paginated)' })
   @ApiResponse({
     status: 200,
-    description: 'Return all records.',
-    type: [ExTableResponseDto],
+    description: 'Paginated list of records.',
   })
-  async findAll(): Promise<ExTableResponseDto[]> {
-    const query = new GetAllExTablesQuery();
-    return await this.queryBus.execute(query);
+  async findAll(
+    @Query() pagination: PaginationQueryDto,
+  ): Promise<PaginatedResponse<ExTableResponseDto>> {
+    const query = new GetAllExTablesQuery(
+      pagination.page,
+      pagination.limit,
+      pagination.sortBy,
+      pagination.sortOrder,
+    );
+    const result = await this.queryBus.execute(query);
+    return PaginatedResponse.build(
+      result.items,
+      result.total,
+      pagination.page,
+      pagination.limit,
+    );
   }
 
   @Get(':id')

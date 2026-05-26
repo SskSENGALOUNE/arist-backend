@@ -3,6 +3,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { KafkaModule } from './messaging/kafka.module';
 import { ExModuleInfrastructureModule } from './ex-module/ex-module-infrastructure.module';
 import { TransactionInfrastructureModule } from './transaction/transaction-infrastructure.module';
+import { UserInfrastructureModule } from './user/user-infrastructure.module';
 
 @Module({
   imports: [
@@ -10,12 +11,14 @@ import { TransactionInfrastructureModule } from './transaction/transaction-infra
     // KafkaModule,
     ExModuleInfrastructureModule,
     TransactionInfrastructureModule,
+    UserInfrastructureModule,
   ],
   exports: [
     PrismaModule,
     // KafkaModule,
     ExModuleInfrastructureModule,
     TransactionInfrastructureModule,
+    UserInfrastructureModule,
   ],
 })
 export class InfrastructureModule {}

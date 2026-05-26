@@ -6,8 +6,6 @@ import { GetTotalTransactionQuery } from './get-total-transaction.query';
 import { GetTotalTransactionResponseDto } from '../../../presentation/transaction/dto/get-total-transaction-response.dto';
 import type { TransactionRepository } from '../../../domain/transaction/transaction.repository';
 import { TRANSECTION_REPOSITORY } from '../../../domain/transaction/transaction.repository';
-import { mapDomainErrorToResponse } from 'src/presentation/common/responses/map-domain-error-response.helper';
-import { CustomNotFoundException } from 'src/domain/exceptions/exception-custom-notfound';
 
 @QueryHandler(GetTotalTransactionQuery)
 export class GetTotalTransactionHandler implements IQueryHandler<GetTotalTransactionQuery> {
@@ -19,7 +17,6 @@ export class GetTotalTransactionHandler implements IQueryHandler<GetTotalTransac
   async execute(
     query: GetTotalTransactionQuery,
   ): Promise<GetTotalTransactionResponseDto> {
-    // throw new CustomNotFoundException('Method not implemented.');
     const summary = await this.transactionRepository.getTotalSummary();
 
     return {

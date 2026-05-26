@@ -2,6 +2,7 @@ export interface IExTableRepository {
   create(data: CreateExTableData): Promise<ExTableData>;
   findById(id: string): Promise<ExTableData | null>;
   findAll(): Promise<ExTableData[]>;
+  findPaginated(params: PaginationParams): Promise<PaginatedResult<ExTableData>>;
   update(id: string, data: UpdateExTableData): Promise<ExTableData>;
   delete(id: string): Promise<void>;
 }
@@ -24,6 +25,18 @@ export interface ExTableData {
   createdBy: string;
   updatedAt: Date;
   updatedBy: string;
+}
+
+export interface PaginationParams {
+  skip: number;
+  take: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface PaginatedResult<T> {
+  items: T[];
+  total: number;
 }
 
 export const EX_TABLE_REPOSITORY = Symbol('EX_TABLE_REPOSITORY');

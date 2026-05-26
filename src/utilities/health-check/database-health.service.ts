@@ -1,61 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import { DatabaseEngine } from './db-engine';
-import { DbHealthResult } from './db-health-result';
-import { detectDatabaseEngines } from '../health-check/detect-db-engine';
-import { PostgresHealthAdapter } from './postgres.adapter';
-import { MysqlHealthAdapter } from './mysql.adapter';
-import { SqlServerHealthAdapter } from './sqlserver.adapter';
-import { MongoHealthAdapter } from './mongo.adapter';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service';
 import { DatabaseHealthPort } from './database-health.port';
+import { DbHealthResult } from './db-health-result';
 
 @Injectable()
 export class DatabaseHealthService implements DatabaseHealthPort {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async checkAll(): Promise<DbHealthResult[]> {
-    const engines = detectDatabaseEngines();
-    const results: DbHealthResult[] = [];
+    return [await this.checkPrisma()];
+  }
 
-    for (const engine of engines) {
-      switch (engine) {
-        case DatabaseEngine.POSTGRES: {
-          const adapter = new PostgresHealthAdapter(this.dataSource);
-          const result = await adapter.check();
-          results.push(result as DbHealthResult);
-          break;
-        }
-
-        case DatabaseEngine.MYSQL:
-          results.push(
-            (await new MysqlHealthAdapter(
-              this.dataSource,
-            ).check()) as DbHealthResult,
-          );
-          break;
-
-        case DatabaseEngine.SQLSERVER:
-          results.push(
-            (await new SqlServerHealthAdapter(
-              this.dataSource,
-            ).check()) as DbHealthResult,
-          );
-          break;
-
-        case DatabaseEngine.MONGO:
-          results.push(
-            (await new MongoHealthAdapter(
-              process.env.DATABASE_URL!,
-            ).check()) as DbHealthResult,
-          );
-          break;
-
-        default:
-          // Unsupported engine; skip
-          break;
-      }
+  private async checkPrisma(): Promise<DbHealthResult> {
+    try {
+      await this.prisma.$queryRaw`SELECT 1`;
+      return { engine: 'prisma', status: 'ok' };
+    } catch (err) {
+      return {
+        engine: 'prisma',
+        status: 'error',
+        error: err instanceof Error ? err.message : 'Unknown error',
+      };
     }
-
-    return results;
   }
 }

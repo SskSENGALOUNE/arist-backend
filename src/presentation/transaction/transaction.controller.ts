@@ -4,8 +4,10 @@ import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { GetTotalTransactionQuery } from '../../application/transaction/queries/get-total-transaction.query';
 import { GetTransactionsPaginatedQuery } from '../../application/transaction/queries/get-transactions-paginated.query';
 import { GetTotalTransactionResponseDto } from './dto/get-total-transaction-response.dto';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Transactions')
+@Public()
 @Controller('transactions')
 export class TransactionController {
     constructor(private readonly queryBus: QueryBus) { }

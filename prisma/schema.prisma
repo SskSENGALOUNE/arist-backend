@@ -22,6 +22,149 @@ enum BankType {
   LDB
 }
 
+enum UserRole {
+  ADMIN
+  EMPLOYEE
+}
+
+enum AuditAction {
+  LOGIN
+  LOGIN_FAILED
+  LOGOUT
+  TOKEN_REFRESHED
+  PASSWORD_CHANGED
+  USER_CREATED
+  USER_UPDATED
+  USER_DELETED
+  PERMISSION_GRANTED
+  PERMISSION_REVOKED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum LanguageLevel {
+  NONE
+  BASIC
+  INTERMEDIATE
+  ADVANCED
+  NATIVE
+}
+
+enum EducationLevel {
+  HIGH_SCHOOL
+  VOCATIONAL
+  DIPLOMA
+  BACHELOR
+  MASTER
+  PHD
+}
+
+enum GraduatedFrom {
+  DOMESTIC
+  ABROAD
+}
+
+enum Country {
+  LAOS
+  THAILAND
+  VIETNAM
+  CHINA
+  CAMBODIA
+  MYANMAR
+  MALAYSIA
+  SINGAPORE
+  JAPAN
+  SOUTH_KOREA
+  USA
+  UK
+  AUSTRALIA
+  FRANCE
+  GERMANY
+  RUSSIA
+  CANADA
+  OTHER
+}
+
+model User {
+  id          String    @id @default(uuid()) @db.Uuid
+  email       String    @unique
+  username    String    @unique
+  password    String
+  role        UserRole  @default(EMPLOYEE)
+  isActive    Boolean   @default(true) @map("is_active")
+  lastLoginAt DateTime? @map("last_login_at")
+
+  photoUrl         String?         @map("photo_url")
+  firstName        String          @map("first_name")
+  lastName         String          @map("last_name")
+  gender           Gender?
+  educationLevel   EducationLevel? @map("education_level")
+  institutionName  String?         @map("institution_name")
+  graduatedFrom    GraduatedFrom?  @map("graduated_from")
+  graduatedCountry Country?        @map("graduated_country")
+  fieldOfStudy     String?         @map("field_of_study")
+  englishLevel     LanguageLevel?  @map("english_level")
+  vietnameseLevel  LanguageLevel?  @map("vietnamese_level")
+  chineseLevel     LanguageLevel?  @map("chinese_level")
+  otherLanguages   String?         @map("other_languages")
+  passportExpiry   DateTime?       @map("passport_expiry") @db.Date
+
+  mustChangePassword Boolean @default(true) @map("must_change_password")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  createdBy String?  @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedBy String?  @map("updated_by")
+
+  auditLogs     AuditLog[]
+  refreshTokens RefreshToken[]
+
+  @@index([role])
+  @@index([lastName])
+  @@index([passportExpiry])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  userAgent String?   @map("user_agent")
+  ipAddress String?   @map("ip_address")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+model AuditLog {
+  id         String      @id @default(uuid()) @db.Uuid
+  userId     String?     @map("user_id") @db.Uuid
+  action     AuditAction
+  resource   String?
+  resourceId String?     @map("resource_id")
+  ipAddress  String?     @map("ip_address")
+  userAgent  String?     @map("user_agent")
+  metadata   Json?
+  createdAt  DateTime    @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
 model ExTable {
   id        String   @id @default(uuid()) @db.Uuid
   name      String

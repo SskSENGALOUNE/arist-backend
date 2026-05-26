@@ -1,9 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { UpdateExTableCommand } from './update-ex-table.command';
 import type { IExTableRepository } from '../../../domain/ex-module/ex-table.repository';
 import { EX_TABLE_REPOSITORY } from '../../../domain/ex-module/ex-table.repository';
 import { ExTable } from '../../../domain/ex-module/ex-table.entity';
+import { NotFoundDomainException } from '../../../domain/exceptions';
 
 @CommandHandler(UpdateExTableCommand)
 export class UpdateExTableHandler implements ICommandHandler<UpdateExTableCommand> {
@@ -16,7 +17,7 @@ export class UpdateExTableHandler implements ICommandHandler<UpdateExTableComman
     const existing = await this.repository.findById(command.id);
     
     if (!existing) {
-      throw new NotFoundException(`ExTable with id ${command.id} not found`);
+      throw NotFoundDomainException.forResource('ExTable', command.id);
     }
 
     const exTable = ExTable.reconstitute(

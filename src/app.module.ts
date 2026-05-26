@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { DatabaseType } from 'typeorm';
+import { ConfigModule } from '@nestjs/config';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { InfrastructureModule } from './infrastructure/infrastructure.module';
@@ -9,47 +10,33 @@ import { ApplicationModule } from './application/application.module';
 import { SharedModule } from './shared/shared.module';
 import { HealthService } from './utilities/health-check/health.service';
 import { DatabaseHealthService } from './utilities/health-check/database-health.service';
-
-function detectDatabaseType(url: string): DatabaseType {
-  if (url.startsWith('postgresql://') || url.startsWith('postgres://')) {
-    return 'postgres';
-  }
-  if (url.startsWith('mysql://')) {
-    return 'mysql';
-  }
-  if (url.startsWith('mongodb://')) {
-    return 'mongodb';
-  }
-  if (url.startsWith('mssql://') || url.startsWith('sqlserver://')) {
-    return 'mssql';
-  }
-
-  throw new Error('Unsupported database type in DATABASE_URL');
-}
-
-function getTypeOrmImports() {
-  const databaseUrl = process.env.DATABASE_URL;
-
-  if (!databaseUrl) {
-    console.warn(
-      'DATABASE_URL not found. Skipping TypeOrmModule configuration.',
-    );
-    return [];
-  }
-
-  return [
-    TypeOrmModule.forRoot({
-      type: detectDatabaseType(databaseUrl),
-      url: databaseUrl,
-      synchronize: false,
-      logging: false,
-    }),
-  ];
-}
+import { envValidationSchema } from './config/env.validation';
+import { appConfig } from './config/app.config';
+import { authConfig } from './config/auth.config';
 
 @Module({
-  imports: [...getTypeOrmImports()],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+      load: [appConfig, authConfig],
+      validationSchema: envValidationSchema,
+      validationOptions: { abortEarly: false },
+    }),
+    ThrottlerModule.forRoot([
+      { ttl: 60_000, limit: 100 },
+    ]),
+    SharedModule,
+    InfrastructureModule,
+    ApplicationModule,
+    PresentationModule,
+  ],
   controllers: [AppController],
-  providers: [AppService, HealthService, DatabaseHealthService],
+  providers: [
+    AppService,
+    HealthService,
+    DatabaseHealthService,
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+  ],
 })
 export class AppModule {}

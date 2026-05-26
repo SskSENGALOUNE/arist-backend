@@ -1,2 +1,12 @@
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
-export class GetAllExTablesQuery {}
+export class GetAllExTablesQuery {
+  constructor(
+    public readonly page: number,
+    public readonly limit: number,
+    public readonly sortBy?: string,
+    public readonly sortOrder: 'asc' | 'desc' = 'desc',
+  ) {}
+
+  get skip(): number {
+    return (this.page - 1) * this.limit;
+  }
+}
