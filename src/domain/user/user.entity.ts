@@ -4,26 +4,26 @@ export enum UserRole {
 }
 
 export enum Gender {
-  MALE = "ຊາຍ",
-  FEMALE = "ຍິງ",
-  OTHER = "ອື່ນໆ",
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  OTHER = "OTHER",
 }
 
 export enum LanguageLevel {
-  NONE = "ບໍ່ມີ",
-  BASIC = "ພື້ນຖານ",
-  INTERMEDIATE = "ປານາງກາງ",
-  ADVANCED = "ຂັ້ນສູງ",
-  NATIVE = "ພາສາແມ່",
+  NONE = "NONE",
+  BASIC = "BASIC",
+  INTERMEDIATE = "INTERMEDIATE",
+  ADVANCED = "ADVANCED",
+  NATIVE = "NATIVE",
 }
 
 export enum EducationLevel {
-  HIGH_SCHOOL = "ມັດທະຍົມສືກສາ",
-  VOCATIONAL = "ວິຊາຊີບ",
-  DIPLOMA = "ປະລິນຍາຕີ",
-  BACHELOR = "ປະລິນຍາຕີ",
-  MASTER = "ປະລິນຍາໂທ",
-  PHD = "ປະລິນຍາເອກ",
+  HIGH_SCHOOL = "HIGH_SCHOOL",
+  VOCATIONAL = "VOCATIONAL",
+  DIPLOMA = "DIPLOMA",
+  BACHELOR = "BACHELOR",
+  MASTER = "MASTER",
+  PHD = "PHD",
 }
 
 export enum GraduatedFrom {
