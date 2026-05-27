@@ -17,6 +17,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import type { Request } from 'express';
 import {
   ChangePasswordCommand,
+  CompleteInitialPasswordCommand,
   LoginCommand,
   LogoutCommand,
   RefreshTokenCommand,
@@ -29,6 +30,7 @@ import { GetUserByIdQuery } from '../../application/user/queries';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { CompleteInitialPasswordDto } from './dto/complete-initial-password.dto';
 import { LogoutDto } from './dto/logout.dto';
 import {
   AuthUserResponseDto,
@@ -114,5 +116,21 @@ export class AuthController {
   @ApiResponse({ status: 200, type: AuthUserResponseDto })
   async me(@CurrentUser() user: AuthenticatedUser) {
     return this.queryBus.execute(new GetUserByIdQuery(user.id));
+  }
+
+  @ApiBearerAuth()
+  @Post('complete-initial-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary:
+      'Set a new password on first login (only when mustChangePassword is true)',
+  })
+  async completeInitialPassword(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: CompleteInitialPasswordDto,
+  ): Promise<void> {
+    await this.commandBus.execute(
+      new CompleteInitialPasswordCommand(user.id, dto.newPassword),
+    );
   }
 }

@@ -6,3 +6,5 @@ export * from './logout.command';
 export * from './logout.handler';
 export * from './change-password.command';
 export * from './change-password.handler';
+export * from './complete-initial-password.command';
+export * from './complete-initial-password.handler';

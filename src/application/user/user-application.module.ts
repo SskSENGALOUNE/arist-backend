@@ -6,6 +6,7 @@ import {
   RefreshTokenHandler,
   LogoutHandler,
   ChangePasswordHandler,
+  CompleteInitialPasswordHandler,
 } from '../auth/commands';
 import {
   CreateUserHandler,
@@ -21,6 +22,7 @@ const AuthCommandHandlers = [
   RefreshTokenHandler,
   LogoutHandler,
   ChangePasswordHandler,
+  CompleteInitialPasswordHandler,
 ];
 
 const UserCommandHandlers = [
