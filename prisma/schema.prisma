@@ -11,18 +11,6 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-enum Status {
-  PENDING
-  COMPLETED
-  FAILED
-}
-
-enum BankType {
-  BCEL
-  JDB
-  LDB
-}
-
 enum UserRole {
   ADMIN
   EMPLOYEE
@@ -90,6 +78,18 @@ enum Country {
   OTHER
 }
 
+enum TripType {
+  DOMESTIC
+  INTERNATIONAL
+}
+
+enum TripStatus {
+  DRAFT
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
 model User {
   id          String    @id @default(uuid()) @db.Uuid
   email       String    @unique
@@ -123,6 +123,8 @@ model User {
 
   auditLogs     AuditLog[]
   refreshTokens RefreshToken[]
+  businessTrips BusinessTrip[] @relation("TripOwner")
+  verifiedTrips BusinessTrip[] @relation("TripVerifier")
 
   @@index([role])
   @@index([lastName])
@@ -177,20 +179,32 @@ model ExTable {
   @@map("ex_table")
 }
 
-model Transactions {
-  id             String   @id @default(uuid()) @db.Uuid
-  transaction_id String   @map("transaction_id")
-  merchant_id    String   @map("merchant_id")
-  order_id       String   @map("order_id")
-  merchant_name  String   @map("merchant_name")
-  amount         Float
-  status         Status
-  created_at     DateTime @default(now()) @map("created_at")
-  updated_at     DateTime @updatedAt @map("updated_at")
-  post_request   String   @map("post_request")
-  bank_request   String   @map("bank_request")
-  bank_response  String   @map("bank_response")
-  bank_type      BankType
+model BusinessTrip {
+  id            String     @id @default(uuid()) @db.Uuid
+  title         String
+  tripType      TripType   @map("trip_type")
+  destination   String
+  departureDate DateTime   @map("departure_date") @db.Date
+  returnDate    DateTime   @map("return_date") @db.Date
+  status        TripStatus @default(DRAFT)
+  purpose       String     @db.Text
+  result        String?    @db.Text
 
-  @@map("transactions")
+  submittedAt     DateTime? @map("submitted_at")
+  verifiedAt      DateTime? @map("verified_at")
+  verifiedById    String?   @map("verified_by_id") @db.Uuid
+  rejectionReason String?   @map("rejection_reason") @db.Text
+
+  userId String @map("user_id") @db.Uuid
+  user   User   @relation("TripOwner", fields: [userId], references: [id], onDelete: Restrict)
+
+  verifiedBy User? @relation("TripVerifier", fields: [verifiedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([status])
+  @@index([departureDate])
+  @@map("business_trips")
 }
