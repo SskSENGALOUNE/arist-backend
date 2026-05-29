@@ -27,7 +27,7 @@ export class ChangePasswordHandler
   ) {}
 
   async execute(command: ChangePasswordCommand): Promise<void> {
-    const user = await this.userRepo.findById(command.userId);
+    const user = await this.userRepo.findByIdWithPassword(command.userId);
     if (!user) {
       throw NotFoundDomainException.forResource('User', command.userId);
     }

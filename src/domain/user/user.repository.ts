@@ -93,6 +93,10 @@ export interface IUserRepository {
   findById(id: string): Promise<UserData | null>;
   findByUsername(username: string): Promise<UserData | null>;
   findByEmail(email: string): Promise<UserData | null>;
+  /** Includes the password hash; only for auth flows that verify it. */
+  findByIdWithPassword(id: string): Promise<UserData | null>;
+  /** Includes the password hash; only for auth flows that verify it. */
+  findByUsernameWithPassword(username: string): Promise<UserData | null>;
   findPaginated(params: ListUsersParams): Promise<PaginatedUsers>;
   update(id: string, data: UpdateUserData): Promise<UserData>;
   updateProfile(id: string, data: UpdateProfileData): Promise<UserData>;

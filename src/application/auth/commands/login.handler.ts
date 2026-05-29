@@ -44,7 +44,9 @@ export class LoginHandler implements ICommandHandler<LoginCommand, LoginResult> 
   ) {}
 
   async execute(command: LoginCommand): Promise<LoginResult> {
-    const user = await this.userRepo.findByUsername(command.username);
+    const user = await this.userRepo.findByUsernameWithPassword(
+      command.username,
+    );
     if (!user) {
       throw new UnauthorizedDomainException('Invalid username or password');
     }

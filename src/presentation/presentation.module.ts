@@ -5,6 +5,7 @@ import { CqrsModule } from "@nestjs/cqrs";
 
 import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
+import { BusinessTripModule } from "./business-trip/business-trip.module";
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { UserModule } from "./user/user.module";
     AuthModule,
     UserModule,
     ExTableModule,
+    BusinessTripModule,
   ],
-  exports: [ExTableModule, AuthModule, UserModule],
+  exports: [ExTableModule, AuthModule, UserModule, BusinessTripModule],
 })
 export class PresentationModule {}

@@ -6,7 +6,6 @@ export enum UserRole {
 export enum Gender {
   MALE = "MALE",
   FEMALE = "FEMALE",
-  OTHER = "OTHER",
 }
 
 export enum LanguageLevel {

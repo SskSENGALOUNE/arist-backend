@@ -15,7 +15,6 @@ export const UserRoleLabels: Record<UserRole, string> = {
 export const GenderLabels: Record<Gender, string> = {
   [Gender.MALE]: 'ຊາຍ',
   [Gender.FEMALE]: 'ຍິງ',
-  [Gender.OTHER]: 'ອື່ນໆ',
 };
 
 export const EducationLevelLabels: Record<EducationLevel, string> = {

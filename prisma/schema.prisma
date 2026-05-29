@@ -32,7 +32,6 @@ enum AuditAction {
 enum Gender {
   MALE
   FEMALE
-  OTHER
 }
 
 enum LanguageLevel {
@@ -81,6 +80,27 @@ enum Country {
 enum TripType {
   DOMESTIC
   INTERNATIONAL
+}
+
+enum LaoProvince {
+  VIENTIANE_CAPITAL
+  PHONGSALI
+  LUANG_NAMTHA
+  OUDOMXAI
+  BOKEO
+  LUANG_PRABANG
+  HUAPHANH
+  XAYABOULI
+  XIANGKHOUANG
+  VIENTIANE
+  BORIKHAMXAI
+  KHAMMOUANE
+  SAVANNAKHET
+  SALAVAN
+  SEKONG
+  CHAMPASAK
+  ATTAPEU
+  XAISOMBOUN
 }
 
 enum TripStatus {
@@ -180,15 +200,14 @@ model ExTable {
 }
 
 model BusinessTrip {
-  id            String     @id @default(uuid()) @db.Uuid
-  title         String
-  tripType      TripType   @map("trip_type")
-  destination   String
-  departureDate DateTime   @map("departure_date") @db.Date
-  returnDate    DateTime   @map("return_date") @db.Date
-  status        TripStatus @default(DRAFT)
-  purpose       String     @db.Text
-  result        String?    @db.Text
+  id                  String       @id @default(uuid()) @db.Uuid
+  title               String
+  tripType            TripType     @map("trip_type")
+  destinationProvince LaoProvince? @map("destination_province")
+  destinationCountry  Country?     @map("destination_country")
+  departureDate       DateTime     @map("departure_date") @db.Date
+  returnDate          DateTime     @map("return_date") @db.Date
+  status              TripStatus   @default(DRAFT)
 
   submittedAt     DateTime? @map("submitted_at")
   verifiedAt      DateTime? @map("verified_at")

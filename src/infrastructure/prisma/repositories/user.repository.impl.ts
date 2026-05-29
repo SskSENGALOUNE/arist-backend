@@ -47,6 +47,22 @@ export class UserRepositoryImpl implements IUserRepository {
     return user as UserData | null;
   }
 
+  async findByIdWithPassword(id: string): Promise<UserData | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      omit: { password: false },
+    });
+    return user as UserData | null;
+  }
+
+  async findByUsernameWithPassword(username: string): Promise<UserData | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { username },
+      omit: { password: false },
+    });
+    return user as UserData | null;
+  }
+
   async findPaginated(params: ListUsersParams): Promise<PaginatedUsers> {
     const where: Prisma.UserWhereInput = {};
     if (params.role) where.role = params.role;

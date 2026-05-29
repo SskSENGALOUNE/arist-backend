@@ -27,7 +27,7 @@ export class CompleteInitialPasswordHandler
   ) {}
 
   async execute(command: CompleteInitialPasswordCommand): Promise<void> {
-    const user = await this.userRepo.findById(command.userId);
+    const user = await this.userRepo.findByIdWithPassword(command.userId);
     if (!user) {
       throw NotFoundDomainException.forResource('User', command.userId);
     }
