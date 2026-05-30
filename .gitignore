@@ -55,3 +55,6 @@ src/**/*.js.map
 .cache/
 tmp/
 temp/
+
+# Uploaded files
+/uploads

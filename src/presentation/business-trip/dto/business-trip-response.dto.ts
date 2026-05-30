@@ -1,6 +1,20 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Country, LaoProvince, TripStatus, TripType } from '@prisma/client';
 
+export class BusinessTripUserDto {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  firstName: string;
+
+  @ApiProperty()
+  lastName: string;
+
+  @ApiProperty()
+  email: string;
+}
+
 export class BusinessTripResponseDto {
   @ApiProperty()
   id: string;
@@ -40,6 +54,9 @@ export class BusinessTripResponseDto {
 
   @ApiProperty()
   userId: string;
+
+  @ApiPropertyOptional({ type: () => BusinessTripUserDto })
+  user?: BusinessTripUserDto;
 
   @ApiProperty()
   createdAt: Date;

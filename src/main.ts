@@ -1,10 +1,11 @@
 import { config as dotenvConfig } from 'dotenv';
-import { resolve } from 'path';
+import { join, resolve } from 'path';
 
 // Load .env FIRST before any other imports that might read process.env
 dotenvConfig({ path: resolve(__dirname, '..', '.env'), override: true });
 
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -18,7 +19,9 @@ import { GlobalExceptionFilter } from './presentation/filters/global-exception.f
 import type { AppConfig } from './config/app.config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bufferLogs: true,
+  });
   const config = app.get(ConfigService);
   const appCfg = config.get<AppConfig>('app')!;
 
@@ -31,6 +34,11 @@ async function bootstrap() {
   app.enableCors({
     origin: appCfg.corsOrigins.includes('*') ? true : appCfg.corsOrigins,
     credentials: true,
+  });
+
+  // ───── Static assets (uploaded files) ─────
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
+    prefix: '/uploads/',
   });
 
   // ───── API surface ─────

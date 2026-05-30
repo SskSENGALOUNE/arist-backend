@@ -199,6 +199,22 @@ model ExTable {
   @@map("ex_table")
 }
 
+model Banner {
+  id        String   @id @default(uuid()) @db.Uuid
+  title     String
+  subtitle  String?
+  imageUrl  String?  @map("image_url")
+  isActive  Boolean  @default(true) @map("is_active")
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedBy String   @map("updated_by")
+
+  @@index([isActive, sortOrder])
+  @@map("banner")
+}
+
 model BusinessTrip {
   id                  String       @id @default(uuid()) @db.Uuid
   title               String
