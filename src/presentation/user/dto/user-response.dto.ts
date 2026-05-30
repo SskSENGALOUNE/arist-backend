@@ -24,6 +24,9 @@ export class UserResponseDto {
   @ApiPropertyOptional() otherLanguages?: string | null;
   @ApiPropertyOptional() passportExpiry?: Date | null;
 
+  @ApiPropertyOptional() departmentId?: string | null;
+  @ApiPropertyOptional() positionId?: string | null;
+
   @ApiProperty() createdAt: Date;
   @ApiProperty() updatedAt: Date;
 }

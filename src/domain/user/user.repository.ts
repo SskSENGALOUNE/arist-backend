@@ -32,6 +32,9 @@ export interface UserData {
   otherLanguages: string | null;
   passportExpiry: Date | null;
 
+  departmentId: string | null;
+  positionId: string | null;
+
   createdAt: Date;
   createdBy: string | null;
   updatedAt: Date;
@@ -47,6 +50,8 @@ export interface CreateUserData {
   lastName: string;
   mustChangePassword?: boolean;
   createdBy?: string | null;
+  departmentId?: string | null;
+  positionId?: string | null;
 }
 
 export interface UpdateUserData {
@@ -55,6 +60,8 @@ export interface UpdateUserData {
   isActive?: boolean;
   firstName?: string;
   lastName?: string;
+  departmentId?: string | null;
+  positionId?: string | null;
   updatedBy?: string | null;
 }
 

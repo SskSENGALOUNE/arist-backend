@@ -10,6 +10,8 @@ export class UpdateUserCommand {
       isActive?: boolean;
       firstName?: string;
       lastName?: string;
+      departmentId?: string | null;
+      positionId?: string | null;
     },
   ) {}
 }

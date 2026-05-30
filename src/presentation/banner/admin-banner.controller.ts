@@ -30,6 +30,7 @@ import {
   bannerMulterOptions,
   BANNER_UPLOAD_SUBDIR,
 } from './banner-upload.config';
+import { buildFileUrl } from '../common/upload/image-upload.util';
 import { Roles } from '../auth/decorators/roles.decorator';
 import {
   CurrentUser,
@@ -94,7 +95,7 @@ export class AdminBannerController {
     if (!file) {
       throw new BadRequestException('No file uploaded. Use field name "file".');
     }
-    const url = `${req.protocol}://${req.get('host')}/uploads/${BANNER_UPLOAD_SUBDIR}/${file.filename}`;
+    const url = buildFileUrl(req, BANNER_UPLOAD_SUBDIR, file.filename);
     return { url };
   }
 

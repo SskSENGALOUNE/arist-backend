@@ -9,5 +9,7 @@ export class CreateUserCommand {
     public readonly firstName: string,
     public readonly lastName: string,
     public readonly createdBy: string,
+    public readonly departmentId?: string | null,
+    public readonly positionId?: string | null,
   ) {}
 }

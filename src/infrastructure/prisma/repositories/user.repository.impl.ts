@@ -27,6 +27,8 @@ export class UserRepositoryImpl implements IUserRepository {
         mustChangePassword: data.mustChangePassword ?? true,
         createdBy: data.createdBy ?? null,
         updatedBy: data.createdBy ?? null,
+        departmentId: data.departmentId ?? null,
+        positionId: data.positionId ?? null,
       },
     });
     return user as UserData;
@@ -101,6 +103,8 @@ export class UserRepositoryImpl implements IUserRepository {
         isActive: data.isActive,
         firstName: data.firstName,
         lastName: data.lastName,
+        departmentId: data.departmentId,
+        positionId: data.positionId,
         updatedBy: data.updatedBy ?? null,
       },
     });

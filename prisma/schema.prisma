@@ -134,6 +134,9 @@ model User {
   otherLanguages   String?         @map("other_languages")
   passportExpiry   DateTime?       @map("passport_expiry") @db.Date
 
+  departmentId String?     @map("department_id") @db.Uuid
+  positionId   String?     @map("position_id") @db.Uuid
+
   mustChangePassword Boolean @default(true) @map("must_change_password")
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -145,11 +148,43 @@ model User {
   refreshTokens RefreshToken[]
   businessTrips BusinessTrip[] @relation("TripOwner")
   verifiedTrips BusinessTrip[] @relation("TripVerifier")
+  department    Department?    @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  position      Position?      @relation(fields: [positionId], references: [id], onDelete: SetNull)
 
   @@index([role])
   @@index([lastName])
   @@index([passportExpiry])
+  @@index([departmentId])
+  @@index([positionId])
   @@map("users")
+}
+
+model Department {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  createdBy String?  @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedBy String?  @map("updated_by")
+
+  users User[]
+
+  @@map("departments")
+}
+
+model Position {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  createdBy String?  @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedBy String?  @map("updated_by")
+
+  users User[]
+
+  @@map("positions")
 }
 
 model RefreshToken {

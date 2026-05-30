@@ -7,6 +7,8 @@ import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
 import { BusinessTripModule } from "./business-trip/business-trip.module";
 import { BannerModule } from "./banner/banner.module";
+import { DepartmentModule } from "./department/department.module";
+import { PositionModule } from "./position/position.module";
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { BannerModule } from "./banner/banner.module";
     ExTableModule,
     BusinessTripModule,
     BannerModule,
+    DepartmentModule,
+    PositionModule,
   ],
   exports: [
     ExTableModule,
@@ -24,6 +28,8 @@ import { BannerModule } from "./banner/banner.module";
     UserModule,
     BusinessTripModule,
     BannerModule,
+    DepartmentModule,
+    PositionModule,
   ],
 })
 export class PresentationModule {}

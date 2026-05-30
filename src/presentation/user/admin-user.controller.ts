@@ -65,6 +65,8 @@ export class AdminUserController {
         dto.firstName,
         dto.lastName,
         admin.id,
+        dto.departmentId,
+        dto.positionId,
       ),
     );
   }

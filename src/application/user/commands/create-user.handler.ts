@@ -40,6 +40,8 @@ export class CreateUserHandler
       lastName: command.lastName,
       mustChangePassword: true,
       createdBy: command.createdBy,
+      departmentId: command.departmentId ?? null,
+      positionId: command.positionId ?? null,
     });
 
     return { id: user.id };
