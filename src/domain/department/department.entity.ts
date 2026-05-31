@@ -8,6 +8,7 @@ export class Department {
     public readonly updatedAt: Date,
     public readonly updatedBy: string | null,
   ) { }
+
   static reconstitute(
     id: string,
     name: string,

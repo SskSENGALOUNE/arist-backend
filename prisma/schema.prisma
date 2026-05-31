@@ -134,8 +134,8 @@ model User {
   otherLanguages   String?         @map("other_languages")
   passportExpiry   DateTime?       @map("passport_expiry") @db.Date
 
-  departmentId String?     @map("department_id") @db.Uuid
-  positionId   String?     @map("position_id") @db.Uuid
+  departmentId String? @map("department_id") @db.Uuid
+  positionId   String? @map("position_id") @db.Uuid
 
   mustChangePassword Boolean @default(true) @map("must_change_password")
 

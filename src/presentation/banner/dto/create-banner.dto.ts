@@ -31,7 +31,7 @@ export class CreateBannerDto {
     example: 'https://cdn.example.com/banners/feature.png',
   })
   @IsOptional()
-  @IsUrl()
+  @IsUrl({ require_tld: false })
   imageUrl?: string;
 
   @ApiPropertyOptional({

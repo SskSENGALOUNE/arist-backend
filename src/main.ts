@@ -26,7 +26,9 @@ async function bootstrap() {
   const appCfg = config.get<AppConfig>('app')!;
 
   // ───── Security & infrastructure middleware ─────
-  app.use(helmet());
+  app.use(helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  }));
   app.use(compression());
   app.use(json({ limit: appCfg.bodyLimit }));
   app.use(urlencoded({ extended: true, limit: appCfg.bodyLimit }));
