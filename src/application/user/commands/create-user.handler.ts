@@ -38,6 +38,7 @@ export class CreateUserHandler
       role: command.role,
       firstName: command.firstName,
       lastName: command.lastName,
+      gender: command.gender ?? null,
       mustChangePassword: true,
       createdBy: command.createdBy,
       departmentId: command.departmentId ?? null,

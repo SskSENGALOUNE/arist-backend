@@ -1,4 +1,4 @@
-import { UserRole } from '../../../domain/user/user.entity';
+import { Gender, UserRole } from '../../../domain/user/user.entity';
 
 export class CreateUserCommand {
   constructor(
@@ -9,6 +9,7 @@ export class CreateUserCommand {
     public readonly firstName: string,
     public readonly lastName: string,
     public readonly createdBy: string,
+    public readonly gender?: Gender | null,
     public readonly departmentId?: string | null,
     public readonly positionId?: string | null,
   ) {}

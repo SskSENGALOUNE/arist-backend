@@ -21,7 +21,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '../auth/decorators/current-user.decorator';
 import { UpdateProfileCommand } from '../../application/user/commands';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { MinioService } from '../../infrastructure/minio/minio.service';
+import { SupabaseStorageService } from '../../infrastructure/supabase/supabase-storage.service';
 import { createMemoryUploadOptions } from '../common/upload/memory-upload.config';
 
 @ApiTags('me')
@@ -30,7 +30,7 @@ import { createMemoryUploadOptions } from '../common/upload/memory-upload.config
 export class MeController {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly minioService: MinioService,
+    private readonly storageService: SupabaseStorageService,
   ) {}
 
   @Patch('profile')
@@ -49,7 +49,7 @@ export class MeController {
 
   @Post('photo')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Upload profile photo to MinIO' })
+  @ApiOperation({ summary: 'Upload profile photo to Supabase Storage' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -63,7 +63,7 @@ export class MeController {
     @CurrentUser() user: AuthenticatedUser,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const photoUrl = await this.minioService.upload('profiles', file);
+    const photoUrl = await this.storageService.upload('profiles', file);
     await this.commandBus.execute(
       new UpdateProfileCommand(user.id, { photoUrl }),
     );

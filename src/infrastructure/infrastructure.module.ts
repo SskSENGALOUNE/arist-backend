@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { PrismaModule } from "./prisma/prisma.module";
-import { MinioModule } from "./minio/minio.module";
+import { SupabaseModule } from "./supabase/supabase.module";
 
 import { ExModuleInfrastructureModule } from "./ex-module/ex-module-infrastructure.module";
 import { UserInfrastructureModule } from "./user/user-infrastructure.module";
@@ -12,7 +12,7 @@ import { PositionInfrastructureModule } from "./position/position-infrastructure
 @Module({
   imports: [
     PrismaModule,
-    MinioModule,
+    SupabaseModule,
     // KafkaModule,
     ExModuleInfrastructureModule,
     UserInfrastructureModule,
@@ -23,7 +23,7 @@ import { PositionInfrastructureModule } from "./position/position-infrastructure
   ],
   exports: [
     PrismaModule,
-    MinioModule,
+    SupabaseModule,
     ExModuleInfrastructureModule,
     UserInfrastructureModule,
     BusinessTripInfrastructureModule,

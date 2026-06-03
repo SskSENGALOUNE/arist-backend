@@ -11,12 +11,10 @@ import {
   Patch,
   Post,
   Query,
-  Req,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import type { Request } from 'express';
 import {
   ApiBearerAuth,
   ApiConsumes,
@@ -26,11 +24,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import {
-  bannerMulterOptions,
-  BANNER_UPLOAD_SUBDIR,
-} from './banner-upload.config';
-import { buildFileUrl } from '../common/upload/image-upload.util';
+import { createMemoryUploadOptions } from '../common/upload/memory-upload.config';
+import { SupabaseStorageService } from '../../infrastructure/supabase/supabase-storage.service';
 import { Roles } from '../auth/decorators/roles.decorator';
 import {
   CurrentUser,
@@ -60,6 +55,7 @@ export class AdminBannerController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
+    private readonly storageService: SupabaseStorageService,
   ) {}
 
   @Post()
@@ -84,18 +80,19 @@ export class AdminBannerController {
 
   @Post('upload')
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Upload a banner image, returns its public URL' })
+  @ApiOperation({
+    summary: 'Upload a banner image to Supabase Storage, returns its public URL',
+  })
   @ApiConsumes('multipart/form-data')
   @ApiResponse({ status: 201, description: 'Image uploaded.' })
-  @UseInterceptors(FileInterceptor('file', bannerMulterOptions))
-  uploadImage(
+  @UseInterceptors(FileInterceptor('file', createMemoryUploadOptions()))
+  async uploadImage(
     @UploadedFile() file: Express.Multer.File | undefined,
-    @Req() req: Request,
-  ): { url: string } {
+  ): Promise<{ url: string }> {
     if (!file) {
       throw new BadRequestException('No file uploaded. Use field name "file".');
     }
-    const url = buildFileUrl(req, BANNER_UPLOAD_SUBDIR, file.filename);
+    const url = await this.storageService.upload('banners', file);
     return { url };
   }
 

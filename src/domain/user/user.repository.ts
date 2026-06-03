@@ -48,6 +48,7 @@ export interface CreateUserData {
   role: UserRole;
   firstName: string;
   lastName: string;
+  gender?: Gender | null;
   mustChangePassword?: boolean;
   createdBy?: string | null;
   departmentId?: string | null;

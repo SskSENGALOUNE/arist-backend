@@ -28,10 +28,16 @@ export const envValidationSchema = Joi.object({
   KAFKA_BROKERS: Joi.string().optional(),
   KAFKA_CLIENT_ID: Joi.string().optional(),
 
-  MINIO_ENDPOINT: Joi.string().required(),
+  // ───── Supabase Storage (profile photos, banners, …) ─────
+  SUPABASE_URL: Joi.string().uri().required(),
+  SUPABASE_SERVICE_KEY: Joi.string().required(),
+  SUPABASE_BUCKET: Joi.string().default('arist'),
+
+  // ───── MinIO (deprecated — replaced by Supabase Storage) ─────
+  MINIO_ENDPOINT: Joi.string().optional(),
   MINIO_PORT: Joi.number().port().default(9000),
   MINIO_USE_SSL: Joi.boolean().default(false),
-  MINIO_ACCESS_KEY: Joi.string().required(),
-  MINIO_SECRET_KEY: Joi.string().required(),
+  MINIO_ACCESS_KEY: Joi.string().optional(),
+  MINIO_SECRET_KEY: Joi.string().optional(),
   MINIO_BUCKET: Joi.string().default('arist-uploads'),
 }).unknown(true);

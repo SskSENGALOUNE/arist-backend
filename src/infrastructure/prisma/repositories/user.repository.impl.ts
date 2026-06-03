@@ -24,6 +24,7 @@ export class UserRepositoryImpl implements IUserRepository {
         role: data.role,
         firstName: data.firstName,
         lastName: data.lastName,
+        gender: (data.gender ?? null) as Prisma.UserCreateInput['gender'],
         mustChangePassword: data.mustChangePassword ?? true,
         createdBy: data.createdBy ?? null,
         updatedBy: data.createdBy ?? null,
