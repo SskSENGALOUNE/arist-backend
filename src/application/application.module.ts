@@ -5,6 +5,7 @@ import { BusinessTripApplicationModule } from "./business-trip/business-trip-app
 import { BannerApplicationModule } from "./banner/banner-application.module";
 import { DepartmentApplicationModule } from "./department/department-application.module";
 import { PositionApplicationModule } from "./position/position-application.module";
+import { SiteSettingApplicationModule } from "./site-setting/site-setting-application.module";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PositionApplicationModule } from "./position/position-application.modul
     BannerApplicationModule,
     DepartmentApplicationModule,
     PositionApplicationModule,
+    SiteSettingApplicationModule,
   ],
   exports: [
     CqrsModule,
@@ -22,6 +24,7 @@ import { PositionApplicationModule } from "./position/position-application.modul
     BannerApplicationModule,
     DepartmentApplicationModule,
     PositionApplicationModule,
+    SiteSettingApplicationModule,
   ],
 })
 export class ApplicationModule {}

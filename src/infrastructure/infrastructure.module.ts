@@ -8,6 +8,7 @@ import { BusinessTripInfrastructureModule } from "./business-trip/business-trip-
 import { BannerInfrastructureModule } from "./banner/banner-infrastructure.module";
 import { DepartmentInfrastructureModule } from "./department/department-infrastructure.module";
 import { PositionInfrastructureModule } from "./position/position-infrastructure.module";
+import { SiteSettingInfrastructureModule } from "./site-setting/site-setting-infrastructure.module";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { PositionInfrastructureModule } from "./position/position-infrastructure
     BannerInfrastructureModule,
     DepartmentInfrastructureModule,
     PositionInfrastructureModule,
+    SiteSettingInfrastructureModule,
   ],
   exports: [
     PrismaModule,
@@ -30,6 +32,7 @@ import { PositionInfrastructureModule } from "./position/position-infrastructure
     BannerInfrastructureModule,
     DepartmentInfrastructureModule,
     PositionInfrastructureModule,
+    SiteSettingInfrastructureModule,
   ],
 })
 export class InfrastructureModule {}

@@ -9,6 +9,7 @@ import { BusinessTripModule } from "./business-trip/business-trip.module";
 import { BannerModule } from "./banner/banner.module";
 import { DepartmentModule } from "./department/department.module";
 import { PositionModule } from "./position/position.module";
+import { SiteSettingModule } from "./site-setting/site-setting.module";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { PositionModule } from "./position/position.module";
     BannerModule,
     DepartmentModule,
     PositionModule,
+    SiteSettingModule,
   ],
   exports: [
     ExTableModule,
@@ -30,6 +32,7 @@ import { PositionModule } from "./position/position.module";
     BannerModule,
     DepartmentModule,
     PositionModule,
+    SiteSettingModule,
   ],
 })
 export class PresentationModule {}

@@ -250,6 +250,30 @@ model Banner {
   @@map("banner")
 }
 
+/// Singleton table holding site-wide branding (logo) and footer content.
+/// Exactly one row exists, identified by SITE_SETTING_SINGLETON_ID.
+model SiteSetting {
+  id             String   @id @db.Uuid
+  logoUrl        String?  @map("logo_url")
+  brandName      String?  @map("brand_name")
+  description    String?  @map("description")
+  footerText     String?  @map("footer_text")
+  linksHeading   String?  @map("links_heading")
+  footerLinks    Json     @default("[]") @map("footer_links")
+  contactEmail   String?  @map("contact_email")
+  contactPhone   String?  @map("contact_phone")
+  contactAddress String?  @map("contact_address")
+  facebookUrl    String?  @map("facebook_url")
+  instagramUrl   String?  @map("instagram_url")
+  whatsappUrl    String?  @map("whatsapp_url")
+  linkedinUrl    String?  @map("linkedin_url")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  updatedBy      String   @map("updated_by")
+
+  @@map("site_setting")
+}
+
 model BusinessTrip {
   id                  String       @id @default(uuid()) @db.Uuid
   title               String
