@@ -4,6 +4,7 @@ export class GetAllBusinessTripsQuery {
     public readonly limit: number,
     public readonly sortBy?: string,
     public readonly sortOrder: 'asc' | 'desc' = 'desc',
+    public readonly search?: string,
   ) {}
 
   get skip(): number {

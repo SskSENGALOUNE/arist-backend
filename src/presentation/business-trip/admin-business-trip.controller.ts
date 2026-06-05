@@ -23,6 +23,10 @@ import { UserRole } from '../../domain/user/user.entity';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 import { PaginatedResponse } from '../common/dto/paginated-response.dto';
 import { BusinessTripResponseDto } from './dto/business-trip-response.dto';
+import { BusinessTripStatsResponseDto } from './dto/business-trip-stats-response.dto';
+import { DestinationStatsResponseDto } from './dto/destination-stats-response.dto';
+import { TopTravelersQueryDto } from './dto/top-travelers-query.dto';
+import { TravelerStatResponseDto } from './dto/traveler-stat-response.dto';
 import { RejectBusinessTripDto } from './dto/reject-business-trip.dto';
 import {
   VerifyBusinessTripCommand,
@@ -31,6 +35,9 @@ import {
 import {
   GetBusinessTripByIdQuery,
   GetAllBusinessTripsQuery,
+  GetBusinessTripStatsQuery,
+  GetDestinationStatsQuery,
+  GetTopTravelersQuery,
 } from '../../application/business-trip/queries';
 
 @ApiTags('admin-business-trips')
@@ -47,6 +54,7 @@ export class AdminBusinessTripController {
   @ApiOperation({ summary: 'List all business trips (paginated)' })
   async findAll(
     @Query() pagination: PaginationQueryDto,
+    @Query('search') search?: string,
   ): Promise<PaginatedResponse<BusinessTripResponseDto>> {
     const result = await this.queryBus.execute(
       new GetAllBusinessTripsQuery(
@@ -54,6 +62,7 @@ export class AdminBusinessTripController {
         pagination.limit,
         pagination.sortBy,
         pagination.sortOrder,
+        search,
       ),
     );
     return PaginatedResponse.build(
@@ -62,6 +71,35 @@ export class AdminBusinessTripController {
       pagination.page,
       pagination.limit,
     );
+  }
+
+  @Get('stats')
+  @ApiOperation({ summary: 'Business trip counts by status' })
+  @ApiResponse({ status: 200, type: BusinessTripStatsResponseDto })
+  async stats(): Promise<BusinessTripStatsResponseDto> {
+    return this.queryBus.execute(new GetBusinessTripStatsQuery());
+  }
+
+  @Get('destination-stats')
+  @ApiOperation({
+    summary: 'Top destination countries and provinces by trip count',
+  })
+  @ApiResponse({ status: 200, type: DestinationStatsResponseDto })
+  async destinationStats(): Promise<DestinationStatsResponseDto> {
+    return this.queryBus.execute(new GetDestinationStatsQuery(5));
+  }
+
+  @Get('top-travelers')
+  @ApiOperation({
+    summary: 'Employees ranked by number of trips (paginated, filter by type)',
+  })
+  async topTravelers(
+    @Query() q: TopTravelersQueryDto,
+  ): Promise<PaginatedResponse<TravelerStatResponseDto>> {
+    const result = await this.queryBus.execute(
+      new GetTopTravelersQuery(q.page, q.limit, q.tripType),
+    );
+    return PaginatedResponse.build(result.items, result.total, q.page, q.limit);
   }
 
   @Get(':id')

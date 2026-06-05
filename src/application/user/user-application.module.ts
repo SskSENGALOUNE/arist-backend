@@ -15,7 +15,11 @@ import {
   ResetPasswordHandler,
   UpdateProfileHandler,
 } from './commands';
-import { GetUserByIdHandler, ListUsersHandler } from './queries';
+import {
+  GetUserByIdHandler,
+  ListUsersHandler,
+  GetUserStatsHandler,
+} from './queries';
 
 const AuthCommandHandlers = [
   LoginHandler,
@@ -33,7 +37,11 @@ const UserCommandHandlers = [
   UpdateProfileHandler,
 ];
 
-const UserQueryHandlers = [GetUserByIdHandler, ListUsersHandler];
+const UserQueryHandlers = [
+  GetUserByIdHandler,
+  ListUsersHandler,
+  GetUserStatsHandler,
+];
 
 @Module({
   imports: [CqrsModule, UserInfrastructureModule],

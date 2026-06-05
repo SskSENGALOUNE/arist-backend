@@ -6,6 +6,7 @@ import type {
   IUserRepository,
   ListUsersParams,
   PaginatedUsers,
+  UserStats,
   UpdateProfileData,
   UpdateUserData,
   UserData,
@@ -93,6 +94,16 @@ export class UserRepositoryImpl implements IUserRepository {
     ]);
 
     return { items: items as UserData[], total };
+  }
+
+  async getStats(): Promise<UserStats> {
+    const [total, active, admins] = await this.prisma.$transaction([
+      this.prisma.user.count(),
+      this.prisma.user.count({ where: { isActive: true } }),
+      this.prisma.user.count({ where: { role: 'ADMIN' } }),
+    ]);
+
+    return { total, active, inactive: total - active, admins };
   }
 
   async update(id: string, data: UpdateUserData): Promise<UserData> {

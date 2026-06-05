@@ -31,12 +31,14 @@ import {
 import {
   GetUserByIdQuery,
   ListUsersQuery,
+  GetUserStatsQuery,
 } from '../../application/user/queries';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ListUsersQueryDto } from './dto/list-users-query.dto';
 import { UserResponseDto } from './dto/user-response.dto';
+import { UserStatsResponseDto } from './dto/user-stats-response.dto';
 import { PaginatedResponse } from '../common/dto/paginated-response.dto';
 
 @ApiTags('admin-users')
@@ -81,6 +83,13 @@ export class AdminUserController {
       new ListUsersQuery(q.page, q.limit, q.role, q.search, q.sortBy, q.sortOrder),
     );
     return PaginatedResponse.build(result.items, result.total, q.page, q.limit);
+  }
+
+  @Get('stats')
+  @ApiOperation({ summary: 'Get user counts (total / active / inactive / admins)' })
+  @ApiResponse({ status: 200, type: UserStatsResponseDto })
+  async stats(): Promise<UserStatsResponseDto> {
+    return this.queryBus.execute(new GetUserStatsQuery());
   }
 
   @Get(':id')

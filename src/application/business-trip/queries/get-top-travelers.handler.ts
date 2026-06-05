@@ -1,16 +1,16 @@
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
-import { GetAllBusinessTripsQuery } from './get-all-business-trips.query';
+import { GetTopTravelersQuery } from './get-top-travelers.query';
 import {
   BUSINESS_TRIP_REPOSITORY,
   type IBusinessTripRepository,
-  type BusinessTripData,
   type PaginatedResult,
+  type TravelerStat,
 } from '../../../domain/business-trip/business-trip.repository';
 
-@QueryHandler(GetAllBusinessTripsQuery)
-export class GetAllBusinessTripsHandler
-  implements IQueryHandler<GetAllBusinessTripsQuery>
+@QueryHandler(GetTopTravelersQuery)
+export class GetTopTravelersHandler
+  implements IQueryHandler<GetTopTravelersQuery>
 {
   constructor(
     @Inject(BUSINESS_TRIP_REPOSITORY)
@@ -18,14 +18,12 @@ export class GetAllBusinessTripsHandler
   ) {}
 
   async execute(
-    query: GetAllBusinessTripsQuery,
-  ): Promise<PaginatedResult<BusinessTripData>> {
-    return this.repository.findAll({
+    query: GetTopTravelersQuery,
+  ): Promise<PaginatedResult<TravelerStat>> {
+    return this.repository.getTopTravelers({
       skip: query.skip,
       take: query.limit,
-      sortBy: query.sortBy,
-      sortOrder: query.sortOrder,
-      search: query.search,
+      tripType: query.tripType,
     });
   }
 }

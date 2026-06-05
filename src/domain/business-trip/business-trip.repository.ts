@@ -10,6 +10,11 @@ export interface IBusinessTripRepository {
   findAll(
     params: PaginationParams,
   ): Promise<PaginatedResult<BusinessTripData>>;
+  getStats(): Promise<TripStats>;
+  getDestinationStats(limit: number): Promise<DestinationStats>;
+  getTopTravelers(
+    params: TopTravelersParams,
+  ): Promise<PaginatedResult<TravelerStat>>;
   update(id: string, data: UpdateBusinessTripData): Promise<BusinessTripData>;
   verify(id: string, verifiedById: string): Promise<BusinessTripData>;
   reject(
@@ -71,6 +76,39 @@ export interface PaginationParams {
   take: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
+  search?: string;
+}
+
+export interface TripStats {
+  total: number;
+  pending: number;
+  verified: number;
+  rejected: number;
+  draft: number;
+}
+
+export interface DestinationStat {
+  name: string;
+  count: number;
+}
+
+export interface DestinationStats {
+  topCountries: DestinationStat[];
+  topProvinces: DestinationStat[];
+}
+
+export interface TopTravelersParams {
+  skip: number;
+  take: number;
+  tripType?: TripType;
+}
+
+export interface TravelerStat {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  tripCount: number;
 }
 
 export interface PaginatedResult<T> {

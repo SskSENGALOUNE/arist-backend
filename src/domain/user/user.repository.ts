@@ -96,6 +96,13 @@ export interface PaginatedUsers {
   total: number;
 }
 
+export interface UserStats {
+  total: number;
+  active: number;
+  inactive: number;
+  admins: number;
+}
+
 export interface IUserRepository {
   create(data: CreateUserData): Promise<UserData>;
   findById(id: string): Promise<UserData | null>;
@@ -106,6 +113,7 @@ export interface IUserRepository {
   /** Includes the password hash; only for auth flows that verify it. */
   findByUsernameWithPassword(username: string): Promise<UserData | null>;
   findPaginated(params: ListUsersParams): Promise<PaginatedUsers>;
+  getStats(): Promise<UserStats>;
   update(id: string, data: UpdateUserData): Promise<UserData>;
   updateProfile(id: string, data: UpdateProfileData): Promise<UserData>;
   updatePassword(

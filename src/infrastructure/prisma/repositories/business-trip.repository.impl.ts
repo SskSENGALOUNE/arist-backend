@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TripStatus } from '@prisma/client';
+import { Prisma, TripStatus } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 import {
   IBusinessTripRepository,
@@ -8,6 +8,10 @@ import {
   BusinessTripData,
   PaginationParams,
   PaginatedResult,
+  TripStats,
+  DestinationStats,
+  TopTravelersParams,
+  TravelerStat,
 } from '../../../domain/business-trip/business-trip.repository';
 
 const userInclude = {
@@ -77,15 +81,118 @@ export class BusinessTripRepositoryImpl implements IBusinessTripRepository {
       [params.sortBy ?? 'createdAt']: params.sortOrder ?? 'desc',
     };
 
+    const where: Prisma.BusinessTripWhereInput = {};
+    if (params.search) {
+      const search = params.search;
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { user: { firstName: { contains: search, mode: 'insensitive' } } },
+        { user: { lastName: { contains: search, mode: 'insensitive' } } },
+        { user: { email: { contains: search, mode: 'insensitive' } } },
+      ];
+    }
+
     const [items, total] = await this.prisma.$transaction([
       this.prisma.businessTrip.findMany({
+        where,
         skip: params.skip,
         take: params.take,
         orderBy,
         include: userInclude,
       }),
-      this.prisma.businessTrip.count(),
+      this.prisma.businessTrip.count({ where }),
     ]);
+
+    return { items, total };
+  }
+
+  async getStats(): Promise<TripStats> {
+    const grouped = await this.prisma.businessTrip.groupBy({
+      by: ['status'],
+      _count: { _all: true },
+    });
+
+    const counts = grouped.reduce<Record<string, number>>((acc, row) => {
+      acc[row.status] = row._count._all;
+      return acc;
+    }, {});
+
+    const pending = counts[TripStatus.PENDING] ?? 0;
+    const verified = counts[TripStatus.VERIFIED] ?? 0;
+    const rejected = counts[TripStatus.REJECTED] ?? 0;
+    const draft = counts[TripStatus.DRAFT] ?? 0;
+
+    return {
+      total: pending + verified + rejected + draft,
+      pending,
+      verified,
+      rejected,
+      draft,
+    };
+  }
+
+  async getDestinationStats(limit: number): Promise<DestinationStats> {
+    const [countries, provinces] = await Promise.all([
+      this.prisma.businessTrip.groupBy({
+        by: ['destinationCountry'],
+        where: { destinationCountry: { not: null } },
+        _count: { _all: true },
+        orderBy: { _count: { destinationCountry: 'desc' } },
+        take: limit,
+      }),
+      this.prisma.businessTrip.groupBy({
+        by: ['destinationProvince'],
+        where: { destinationProvince: { not: null } },
+        _count: { _all: true },
+        orderBy: { _count: { destinationProvince: 'desc' } },
+        take: limit,
+      }),
+    ]);
+
+    return {
+      topCountries: countries.map((row) => ({
+        name: row.destinationCountry as string,
+        count: row._count._all,
+      })),
+      topProvinces: provinces.map((row) => ({
+        name: row.destinationProvince as string,
+        count: row._count._all,
+      })),
+    };
+  }
+
+  async getTopTravelers(
+    params: TopTravelersParams,
+  ): Promise<PaginatedResult<TravelerStat>> {
+    const where = params.tripType ? { tripType: params.tripType } : {};
+
+    // One group per traveller, ordered by trip count desc.
+    const groups = await this.prisma.businessTrip.groupBy({
+      by: ['userId'],
+      where,
+      _count: { _all: true },
+      orderBy: { _count: { userId: 'desc' } },
+    });
+
+    const total = groups.length;
+    const pageGroups = groups.slice(params.skip, params.skip + params.take);
+
+    const users = await this.prisma.user.findMany({
+      where: { id: { in: pageGroups.map((g) => g.userId) } },
+      select: { id: true, firstName: true, lastName: true, email: true },
+    });
+    const userMap = new Map(users.map((u) => [u.id, u]));
+
+    const items: TravelerStat[] = pageGroups.map((g) => {
+      const u = userMap.get(g.userId);
+      return {
+        userId: g.userId,
+        firstName: u?.firstName ?? '',
+        lastName: u?.lastName ?? '',
+        email: u?.email ?? '',
+        tripCount: g._count._all,
+      };
+    });
 
     return { items, total };
   }

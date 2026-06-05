@@ -12,6 +12,9 @@ import {
   GetBusinessTripByIdHandler,
   GetMyBusinessTripsHandler,
   GetAllBusinessTripsHandler,
+  GetBusinessTripStatsHandler,
+  GetDestinationStatsHandler,
+  GetTopTravelersHandler,
 } from './queries';
 
 const CommandHandlers = [
@@ -26,6 +29,9 @@ const QueryHandlers = [
   GetBusinessTripByIdHandler,
   GetMyBusinessTripsHandler,
   GetAllBusinessTripsHandler,
+  GetBusinessTripStatsHandler,
+  GetDestinationStatsHandler,
+  GetTopTravelersHandler,
 ];
 
 @Module({
