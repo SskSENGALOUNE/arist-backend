@@ -24,6 +24,8 @@ export class GetTopTravelersHandler
       skip: query.skip,
       take: query.limit,
       tripType: query.tripType,
+      month: query.month,
+      year: query.year,
     });
   }
 }

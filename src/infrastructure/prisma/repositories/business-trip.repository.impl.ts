@@ -164,7 +164,13 @@ export class BusinessTripRepositoryImpl implements IBusinessTripRepository {
   async getTopTravelers(
     params: TopTravelersParams,
   ): Promise<PaginatedResult<TravelerStat>> {
-    const where = params.tripType ? { tripType: params.tripType } : {};
+    const where: Prisma.BusinessTripWhereInput = {};
+    if (params.tripType) where.tripType = params.tripType;
+    if (params.month !== undefined && params.year !== undefined) {
+      const start = new Date(params.year, params.month - 1, 1);
+      const end = new Date(params.year, params.month, 1);
+      where.departureDate = { gte: start, lt: end };
+    }
 
     // One group per traveller, ordered by trip count desc.
     const groups = await this.prisma.businessTrip.groupBy({

@@ -6,6 +6,7 @@ import type {
   IUserRepository,
   ListUsersParams,
   PaginatedUsers,
+  PassportStats,
   UserStats,
   UpdateProfileData,
   UpdateUserData,
@@ -104,6 +105,16 @@ export class UserRepositoryImpl implements IUserRepository {
     ]);
 
     return { total, active, inactive: total - active, admins };
+  }
+
+  async getPassportStats(): Promise<PassportStats> {
+    const withPassport = await this.prisma.user.count({
+      where: { passportExpiry: { not: null } },
+    });
+    const withoutPassport = await this.prisma.user.count({
+      where: { passportExpiry: null },
+    });
+    return { withPassport, withoutPassport };
   }
 
   async update(id: string, data: UpdateUserData): Promise<UserData> {

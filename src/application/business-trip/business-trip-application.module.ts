@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { BusinessTripInfrastructureModule } from '../../infrastructure/business-trip/business-trip-infrastructure.module';
+import { UserInfrastructureModule } from '../../infrastructure/user/user-infrastructure.module';
 import {
   CreateBusinessTripHandler,
   UpdateBusinessTripHandler,
@@ -35,7 +36,7 @@ const QueryHandlers = [
 ];
 
 @Module({
-  imports: [CqrsModule, BusinessTripInfrastructureModule],
+  imports: [CqrsModule, BusinessTripInfrastructureModule, UserInfrastructureModule],
   providers: [...CommandHandlers, ...QueryHandlers],
   exports: [CqrsModule, BusinessTripInfrastructureModule],
 })

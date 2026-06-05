@@ -97,7 +97,7 @@ export class AdminBusinessTripController {
     @Query() q: TopTravelersQueryDto,
   ): Promise<PaginatedResponse<TravelerStatResponseDto>> {
     const result = await this.queryBus.execute(
-      new GetTopTravelersQuery(q.page, q.limit, q.tripType),
+      new GetTopTravelersQuery(q.page, q.limit, q.tripType, q.month, q.year),
     );
     return PaginatedResponse.build(result.items, result.total, q.page, q.limit);
   }

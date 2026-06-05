@@ -103,6 +103,11 @@ export interface UserStats {
   admins: number;
 }
 
+export interface PassportStats {
+  withPassport: number;
+  withoutPassport: number;
+}
+
 export interface IUserRepository {
   create(data: CreateUserData): Promise<UserData>;
   findById(id: string): Promise<UserData | null>;
@@ -114,6 +119,7 @@ export interface IUserRepository {
   findByUsernameWithPassword(username: string): Promise<UserData | null>;
   findPaginated(params: ListUsersParams): Promise<PaginatedUsers>;
   getStats(): Promise<UserStats>;
+  getPassportStats(): Promise<PassportStats>;
   update(id: string, data: UpdateUserData): Promise<UserData>;
   updateProfile(id: string, data: UpdateProfileData): Promise<UserData>;
   updatePassword(

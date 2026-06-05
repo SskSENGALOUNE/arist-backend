@@ -101,6 +101,8 @@ export interface TopTravelersParams {
   skip: number;
   take: number;
   tripType?: TripType;
+  month?: number;
+  year?: number;
 }
 
 export interface TravelerStat {
