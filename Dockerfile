@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY prisma ./prisma
-RUN npm ci && npx prisma generate
+RUN npm install && npx prisma generate
 
 
 # ---------- build ----------
@@ -25,7 +25,7 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY prisma ./prisma
-RUN npm ci --omit=dev && npx prisma generate && npm cache clean --force
+RUN npm install --omit=dev && npx prisma generate && npm cache clean --force
 
 
 # ---------- runtime ----------
