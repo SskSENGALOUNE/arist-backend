@@ -24,6 +24,9 @@ export const DEFAULT_SITE_SETTING: Omit<
   instagramUrl: null,
   whatsappUrl: null,
   linkedinUrl: null,
+  timezone: 'Asia/Vientiane',
+  dateFormat: 'DD/MM/YYYY',
+  primaryColor: null,
 };
 
 export class SiteSetting {
@@ -46,6 +49,9 @@ export class SiteSetting {
       instagramUrl?: string | null;
       whatsappUrl?: string | null;
       linkedinUrl?: string | null;
+      timezone?: string;
+      dateFormat?: string;
+      primaryColor?: string | null;
     },
     updatedBy: string,
   ) {
@@ -84,6 +90,11 @@ export class SiteSetting {
         : {}),
       ...(props.linkedinUrl !== undefined
         ? { linkedinUrl: props.linkedinUrl }
+        : {}),
+      ...(props.timezone !== undefined ? { timezone: props.timezone } : {}),
+      ...(props.dateFormat !== undefined ? { dateFormat: props.dateFormat } : {}),
+      ...(props.primaryColor !== undefined
+        ? { primaryColor: props.primaryColor }
         : {}),
       updatedBy,
     };

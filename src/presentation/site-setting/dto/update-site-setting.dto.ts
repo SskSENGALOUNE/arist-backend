@@ -1,13 +1,15 @@
 import {
   IsArray,
   IsEmail,
+  IsHexColor,
   IsOptional,
   IsString,
   IsUrl,
   MaxLength,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class FooterLinkDto {
@@ -107,4 +109,23 @@ export class UpdateSiteSettingDto {
   @IsOptional()
   @IsUrl({ require_tld: false })
   linkedinUrl?: string | null;
+
+  @ApiPropertyOptional({ description: 'IANA timezone', example: 'Asia/Vientiane' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  timezone?: string;
+
+  @ApiPropertyOptional({ description: 'Date format', example: 'DD/MM/YYYY' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  dateFormat?: string;
+
+  @ApiPropertyOptional({ description: 'Primary brand color (hex)', nullable: true, example: '#0284c7' })
+  @Transform(({ value }) => (value === '' || value === null ? undefined : value))
+  @IsOptional()
+  @ValidateIf((o) => o.primaryColor !== undefined)
+  @IsHexColor()
+  primaryColor?: string | null;
 }

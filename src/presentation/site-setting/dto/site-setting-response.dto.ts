@@ -44,6 +44,15 @@ export class SiteSettingResponseDto {
   @ApiPropertyOptional({ nullable: true })
   linkedinUrl: string | null;
 
+  @ApiProperty({ example: 'Asia/Vientiane' })
+  timezone: string;
+
+  @ApiProperty({ example: 'DD/MM/YYYY' })
+  dateFormat: string;
+
+  @ApiPropertyOptional({ nullable: true, example: '#0284c7' })
+  primaryColor: string | null;
+
   @ApiProperty()
   createdAt: Date;
 

@@ -24,6 +24,9 @@ type SiteSettingRow = {
   instagramUrl: string | null;
   whatsappUrl: string | null;
   linkedinUrl: string | null;
+  timezone: string;
+  dateFormat: string;
+  primaryColor: string | null;
   createdAt: Date;
   updatedAt: Date;
   updatedBy: string;
@@ -64,6 +67,9 @@ export class SiteSettingRepositoryImpl implements ISiteSettingRepository {
         instagramUrl: rest.instagramUrl ?? null,
         whatsappUrl: rest.whatsappUrl ?? null,
         linkedinUrl: rest.linkedinUrl ?? null,
+        timezone: rest.timezone ?? 'Asia/Vientiane',
+        dateFormat: rest.dateFormat ?? 'DD/MM/YYYY',
+        primaryColor: rest.primaryColor ?? null,
         updatedBy,
       },
       update: {
@@ -93,6 +99,9 @@ export class SiteSettingRepositoryImpl implements ISiteSettingRepository {
       instagramUrl: row.instagramUrl,
       whatsappUrl: row.whatsappUrl,
       linkedinUrl: row.linkedinUrl,
+      timezone: row.timezone,
+      dateFormat: row.dateFormat,
+      primaryColor: row.primaryColor,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
       updatedBy: row.updatedBy,
