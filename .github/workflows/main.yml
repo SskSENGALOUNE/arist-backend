@@ -1,0 +1,24 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.153.75.235.131 }}
+          username: ${{ secrets.root }}
+          password: ${{ secrets.#xTa@3wn }}
+          script: |
+            cd /var/www/backend
+            git pull
+            npm install
+            pnpm build
+            cp .env dist/.env
+            pm2 restart backend --update-env
