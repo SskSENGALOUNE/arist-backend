@@ -13,12 +13,10 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
-          script_stop: true
           script: |
             cd /var/www/backend
-            git fetch origin
-            git reset --hard origin/main
-            pnpm install --frozen-lockfile
+            git pull
+            npm install
             pnpm build
             cp .env dist/.env
-            pm2 restart backend --update-env
+            pm2 restart backend --update-env 
